@@ -1,0 +1,84 @@
+<table class="table table-striped table-condensed table-bordered">
+    <tr>
+        <th class="span3">Başlama Zamanı</th>
+        <td>{{ job.started_at }}</td>
+    </tr>
+    <tr>
+        <th class="span3">Bitiş Zamanı</th>
+        <td>{{ job.completed_at }}</td>
+    </tr>
+    <tr>
+        <th class="span3">Geçen Süre</th>
+        <td>{{ job.elapsed_time }}</td>
+    </tr>
+    <tr>
+        <th class="span3">Sunucu</th>
+        <td>{{ job.worker_name }}</td>
+    </tr>
+    <tr {% if job.has_error == 1 %}class="error"{% else %}class="success"{% endif %}>
+        <td>Durumu</td>
+        <td>{% if job.has_error == 1 %}Başarısız{% else %}Başarılı{% endif %}</td>
+    </tr>
+    {% if job.has_error == 1 %}
+        <tr>
+            <th>Hata Mesajı</th>
+            <td>{{ job.error_message }}</td>
+        </tr>
+    {% endif %}
+</table>
+
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#input" data-toggle="tab">Girdi</a>
+    </li>
+    <li><a href="#output" data-toggle="tab">Çıktı</a></li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="input">
+        <table class="table table-striped table-condensed table-bordered">
+            <tr>
+                <th class="span2">Dosya Adı</th>
+                <td>{{ job.input_name }}</td>
+            </tr>
+            <tr>
+                <th>Boyutu</th>
+                <td>{{ show_filesize(job.input_size) }}</td>
+            </tr>
+            <tr>
+                <th>Türü</th>
+                <td>{{ job.input_mime_type }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="tab-pane" id="output">
+        <table class="table table-striped table-condensed table-bordered">
+            <tr>
+                <th class="span2">Dosya Adı</th>
+                <td>{{ job.output_name }}</td>
+            </tr>
+            <tr>
+                <th>Boyutu</th>
+                <td>{{ show_filesize(job.output_size) }}</td>
+            </tr>
+            <tr>
+                <th>Türü</th>
+                <td>{{ job.output_mime_type }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<h3>İşlem Adımları</h3>
+<table class="table table-striped table-condensed table-bordered">
+    <tr>
+        <th class="span3">Mesaj</th>
+        <th>Zaman</th>
+    </tr>
+    {% for status in statuses %}
+        <tr>
+            <td>{{ status.status }}</td>
+            <td>{{ status.created_at }}</td>
+        </tr>
+    {% endfor %}
+</table>

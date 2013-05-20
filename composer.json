@@ -1,0 +1,8 @@
+{
+    "require": {
+        "torophp/torophp": "dev-master",
+        "twig/twig": "1.12.2",
+        "symfony/yaml": "v2.2.0",
+        "aws/aws-sdk-php": "2.*"
+    }
+}

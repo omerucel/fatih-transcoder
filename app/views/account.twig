@@ -1,0 +1,41 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+    <div class="container">
+        <div class="span6 offset3">
+            <h3>Bilgilerim</h3>
+            <div class="alert {{ message_type }} {% if not message %}hide{% endif %}">{{ message }}</div>
+
+            <form method="POST" action="{{ base_url }}/account" onsubmit="return saveMyInformation(this);">
+                <div class="control-group">
+                    <strong class="control-label">E-Posta Adresi</strong>
+                    <div class="controls">
+                        <input type="text" name="email" class="span6" value="{{ user.email }}" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="checkbox"><input type="checkbox" onchange="checkboxChangePassword(this);" /> Şifremi değiştirmek istiyorum.</label>
+                </div>
+                <div class="hide">
+                    <div class="control-group">
+                        <strong class="control-label">Şifre</strong>
+                        <div class="controls">
+                            <input type="password" name="password" class="span6" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <strong class="control-label">Şifre Tekrarı</strong>
+                        <div class="controls">
+                            <input type="password" name="password_repeat" class="span6" />
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

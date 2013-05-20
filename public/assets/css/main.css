@@ -1,0 +1,103 @@
+body, html{
+	font-weight: 400;
+	font-family: 'Comfortaa', cursive;
+}
+
+#header{
+	background:#FF4300;
+	padding:10px 0 0 0;
+	border-bottom: 3px solid #e02e01;
+}
+	#header .brand{
+		margin-right:40px;
+		margin-top: 12px;
+		color: #fff;
+		font-size: 28px;
+	}
+
+		#header .brand:hover{
+			text-decoration: none;
+		}
+
+	#header .nav{
+		margin-bottom: 0px;
+	}
+
+		#header .nav li a{
+			background: transparent;
+			padding:15px;
+			margin:0;
+			border-radius: 0px;
+			color:#fff;
+			font-weight: 400;
+		}
+
+		#header .nav li.active a, #header .nav li a:hover{
+			background:#e02e01;
+			color:#fff;
+		}
+
+#page-header{
+	padding-top: 10px;
+	margin-bottom: 20px;
+	background:#fafafa;
+	border-bottom: 1px solid #ddd;
+}
+	.page-header{
+		margin:0px;
+		padding:0px;
+		border-bottom:0px;
+	}
+
+		.page-header h1{
+			font-size: 30px;
+		}
+
+.file-manager{
+	background: #fff;
+	border: 1px solid #ddd;
+	margin: 10px 0;
+	padding: 0 0 5px 0;
+	position: relative;
+}
+
+	.file-manager a{
+		color:#666;
+	}
+
+	.file-manager .breadcrumb{
+		font-size: 10px;
+		margin: 0px;
+		padding: 5px;
+		border-radius: 0;
+	}
+
+	.file-manager .nav{
+		overflow: auto;
+		height: 300px;
+		margin:0px;
+	}
+
+	.file-manager .nav li a{
+		padding:5px;
+		cursor: pointer;
+	}
+
+		.file-manager .nav li a.active{
+			background: #eee;
+		}
+
+		.file-manager .nav li a:hover{
+			background: #ddd;
+		}
+
+.dialog-form{
+	margin: 0px;
+}
+	.dialog-form legend{
+		margin-bottom: 5px;
+	}
+
+	.dialog-form legend + .control-group{
+		margin-top: 5px;
+	}

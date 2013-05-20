@@ -1,0 +1,18 @@
+{% for job in jobs %}
+    <tr>
+        <td>{{ job.name }}</td>
+        <td>{{ job.worker_name|default('waiting') }}</td>
+        <td>{{ job.elapsed_time|default('0') }}</td>
+        {% if job.status == 'processing' %}
+            <td><div class="progress progress-striped active" style="margin-bottom: 0px;"><div class="bar" style="width: {{ job.progress }}%"></div></div></td>
+        {% else %}
+            <td>{{ job.status|default('waiting') }}</td>
+        {% endif %}
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="4">
+            Dönüştürme işlemine devam edilen bir dosya bulunamadı.
+        </td>
+    </tr>
+{% endfor %}

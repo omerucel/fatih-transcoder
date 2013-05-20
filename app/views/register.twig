@@ -1,0 +1,37 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="span8 offset2">
+                <div class="alert alert-error {% if not message %}hide{% endif %}">{{ message }}</div>
+
+                <form name="form" class="form-horizontal" method="POST">
+                    <div class="control-group">
+                        <label class="control-label">E-Posta Adresi</label>
+                        <div class="controls">
+                            <input type="email" name="email" placeholder="E-Posta Adresi" class="span5" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Şifre</label>
+                        <div class="controls">
+                            <input type="password" name="password" placeholder="Şifre" class="span5" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Şifre Tekrarı</label>
+                        <div class="controls">
+                            <input type="password" name="password_repeat" placeholder="Şifre" class="span5" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button class="btn btn-primary">Kayıt Ol</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

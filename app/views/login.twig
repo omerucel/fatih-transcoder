@@ -1,0 +1,38 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="span8 offset2">
+                <div class="well">
+                    <div class="pull-right">
+                        <a href="{{ base_url }}/register" class="btn btn-success">Kayıt Ol</a>
+                    </div>
+                    Hesabınız yok mu? Şimdi yeni bir tane oluşturun.
+                </div>
+
+                <div class="alert alert-error {% if not message %}hide{% endif %}">{{ message }}</div>
+
+                <form name="form" class="form-horizontal" method="POST">
+                    <div class="control-group">
+                        <label class="control-label">E-Posta Adresi</label>
+                        <div class="controls">
+                            <input type="email" name="email" placeholder="E-Posta Adresi" class="span5" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Şifre</label>
+                        <div class="controls">
+                            <input type="password" name="password" placeholder="Şifre" class="span5"/>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button class="btn btn-primary">Oturum Aç</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

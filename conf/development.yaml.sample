@@ -1,0 +1,20 @@
+views:
+  base_url: ""
+  path: $basePath/app/views/
+
+db:
+  dsn: "mysql:host=localhost;dbname=transcoder;charset=utf8"
+  user: root
+  pass: root
+
+aws:
+  bucket: "transcoder-production"
+  key: ""
+  secret: ""
+
+gearman:
+  host: localhost
+  port: 4730
+
+node:
+  bin: "/Users/omer/.nvm/v0.10.4/bin/node"

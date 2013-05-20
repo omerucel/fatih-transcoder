@@ -1,0 +1,9 @@
+{
+  "name": "PicoModal",
+  "version": "0.0.0",
+  "commit": "05645ad818d28869bbe7cf82520e7ca1286a0a9f",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Nycto/PicoModal.git"
+  }
+}

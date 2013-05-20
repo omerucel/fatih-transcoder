@@ -1,0 +1,504 @@
+{% extends "layout.twig" %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ base_url }}/assets/uploadify/uploadify.css" type="text/css" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+{% endblock %}
+
+{% block javascript %}
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script type="text/javascript" src="{{ base_url }}/assets/uploadify/jquery.uploadify.min.js"></script>
+    <script type="text/javascript">
+        function loadStageFiles()
+        {
+            $('.file-manager .nav', $('#stage-files')).html('<li>Yükleniyor...</li>');
+            $.get('{{ base_url }}/stage-files', function(stage_files){
+                $('.file-manager .nav', $('#stage-files')).html(stage_files);
+            });
+        }
+
+        function loadProductionFiles()
+        {
+            $('.file-manager .nav', $('#production-files')).html('<li>Yükleniyor...</li>');
+            $.get('{{ base_url }}/production-files', function(production_files){
+                $('.file-manager .nav', $('#production-files')).html(production_files);
+            });
+        }
+
+        function selectFile(link)
+        {
+            if ($(link).hasClass('active'))
+            {
+                $(link).removeClass('active');
+            }else{
+                $(link).addClass('active');
+            }
+        }
+
+        function removeStageFile()
+        {
+            var link = $('.file-manager .nav li a.active', $('#stage-files'));
+            if (link.length > 0)
+            {
+                if (!confirm('Emin misiniz?')) return;
+
+                var ids = '';
+                $.each($(link), function(index, item){
+                    ids += $(item).data('id') + ',';
+                    if ((index + 1) === link.length)
+                    {
+                        $.ajax({
+                            url: '{{ base_url }}/stage-file/' + ids,
+                            type: 'DELETE',
+                            success: function(result){
+                                $.each($(link), function(index, item){
+                                    $(item).parent().remove();
+                                });
+                            }
+                        });
+                    }
+                });
+            }else{
+                picoModal('Bir dosya seçmelisiniz.');
+            }
+        }
+
+        function selectAllStageFiles()
+        {
+            $('.file-manager .nav li a', $('#stage-files')).addClass('active');
+        }
+
+        function unselectAllStageFiles()
+        {
+            $('.file-manager .nav li a', $('#stage-files')).removeClass('active');
+        }
+
+        function removeProductionFile()
+        {
+            var link = $('.file-manager .nav li a.active', $('#production-files'));
+            if (link.length > 0)
+            {
+                if (!confirm('Emin misiniz?')) return;
+
+                var ids = '';
+                $.each($(link), function(index, item){
+                    ids += $(item).data('id') + ',';
+                    if ((index + 1) === link.length)
+                    {
+                        $.ajax({
+                            url: '{{ base_url }}/production-file/' + ids,
+                            type: 'DELETE',
+                            success: function(result){
+                                $.each($(link), function(index, item){
+                                    $(item).parent().remove();
+                                });
+                            }
+                        });
+                    }
+                });
+            }else{
+                picoModal('Bir dosya seçmelisiniz.');
+            }
+        }
+
+        function selectAllProductionFiles()
+        {
+            $('.file-manager .nav li a', $('#production-files')).addClass('active');
+        }
+
+        function unselectAllProductionFiles()
+        {
+            $('.file-manager .nav li a', $('#production-files')).removeClass('active');
+        }
+
+        function openTranscodeModal()
+        {
+            var link = $('.file-manager .nav li a.active', $('#stage-files'));
+            if (link.length == 1)
+            {
+                $('form input[name=id]', $('#modal-file-transcode')).val($(link).data('id'));
+                $('#modal-file-transcode').modal();
+            }else if(link.length > 1){
+                picoModal('Dönüştürme işlemi için tek dosya seçmelisiniz.');
+            }else{
+                picoModal('Bir dosya seçmelisiniz.');
+            }
+        }
+
+        function transcodeSelectedFile(form)
+        {
+            var data = $(form).serialize();
+
+            $.post('{{ base_url }}/transcode', data, function(response){
+                $('#modal-file-transcode').modal('hide');
+                picoModal('Dönüştürme işlemi kuyruğa eklendi. İşlem geçmişi sayfasından dönüştürme işlemi durumuna göz atabilirsiniz.');
+            });
+            return false;
+        }
+
+        function downloadStageFile()
+        {
+            var link = $('.file-manager .nav li a.active', $('#stage-files'));
+            if (link.length == 1)
+            {
+                window.open('{{ base_url }}/stage-file/' + $(link).data('id'));
+            }else if(link.length > 1){
+                picoModal('İndirme işlemi için tek dosya seçmelisiniz.');
+            }else{
+                picoModal('Bir dosya seçmelisiniz.');
+            }
+        }
+
+        function downloadProductionFile()
+        {
+            var link = $('.file-manager .nav li a.active', $('#production-files'));
+            if (link.length == 1)
+            {
+                window.open('{{ base_url }}/production-file/' + $(link).data('id'));
+            }else if(link.length > 1){
+                picoModal('İndirme işlemi için tek dosya seçmelisiniz.');
+            }else{
+                picoModal('Bir dosya seçmelisiniz.');
+            }
+        }
+
+        function videoCodecCheckbox(checkbox)
+        {
+            if ($(checkbox).is(':checked'))
+            {
+                $('#video-codec-box').show();
+            }else{
+                $('#video-codec-box').hide();
+            }
+        }
+
+        function videoFpsCheckbox(checkbox)
+        {
+            if ($(checkbox).is(':checked'))
+            {
+                $('#video-fps-box').show();
+            }else{
+                $('#video-fps-box').hide();
+            }
+        }
+
+        function videoBitrateCheckbox(checkbox)
+        {
+            if ($(checkbox).is(':checked'))
+            {
+                $('#video-bitrate-box').show();
+            }else{
+                $('#video-bitrate-box').hide();
+            }
+        }
+
+        function audioCodecCheckbox(checkbox)
+        {
+            if ($(checkbox).is(':checked'))
+            {
+                $('#audio-codec-box').show();
+            }else{
+                $('#audio-codec-box').hide();
+            }
+        }
+
+        function audioBitrateCheckbox(checkbox)
+        {
+            if ($(checkbox).is(':checked'))
+            {
+                $('#audio-bitrate-box').show();
+            }else{
+                $('#audio-bitrate-box').hide();
+            }
+        }
+
+        function audioSamplerateCheckbox(checkbox)
+        {
+            if ($(checkbox).is(':checked'))
+            {
+                $('#audio-samplerate-box').show();
+            }else{
+                $('#audio-samplerate-box').hide();
+            }
+        }
+
+        function audioChannelsCheckbox(checkbox)
+        {
+            if ($(checkbox).is(':checked'))
+            {
+                $('#audio-channels-box').show();
+            }else{
+                $('#audio-channels-box').hide();
+            }
+        }
+
+        $(document).ready(function(){
+            loadStageFiles();
+            loadProductionFiles();
+            $('button').tooltip();
+            $('a').tooltip();
+            $('#file-upload').uploadify({
+                'swf': '{{ base_url }}/assets/uploadify/uploadify.swf',
+                'uploader': '{{ base_url }}/upload',
+                'fileObjName': 'file',
+                'fileTypeExts': '*.ogg; *.avi; *.mkv; *.webm; *.flv; *.mov; *.mp4; *.mpeg',
+                'buttonText': 'Dosya Seç',
+                'removeTimeout': 0,
+                'formData': {
+                    'token': '{{ token }}'
+                },
+                'onUploadError': function(file, errorCode, errorMsg, errorString){
+                    console.log(file);
+                    console.log(errorCode);
+                    console.log(errorMsg);
+                    console.log(errorString);
+                },
+                'onQueueComplete': function(queueData){
+                    loadStageFiles();
+                }
+            });
+
+            $("#slider-video-fps").slider({
+                range: "min",
+                value: 17,
+                min: 1,
+                max: 120,
+                slide: function( event, ui ) {
+                    $(".video-fps-input-value").val(ui.value );
+                    $(".video-fps-value").text(ui.value );
+                }
+            });
+
+            $("#slider-video-bitrate").slider({
+                range: "min",
+                value: 3000,
+                min: 16,
+                max: 15000,
+                step: 1,
+                slide: function( event, ui ) {
+                    $(".video-bitrate-input-value").val(ui.value );
+                    $(".video-bitrate-value").text(ui.value );
+                }
+            });
+
+            $("#slider-audio-bitrate").slider({
+                range: "min",
+                value: 96,
+                min: 8,
+                max: 512,
+                step: 1,
+                slide: function( event, ui ) {
+                    $(".audio-bitrate-input-value").val(ui.value );
+                    $(".audio-bitrate-value").text(ui.value );
+                }
+            });
+
+            $("#slider-audio-samplerate").slider({
+                range: "min",
+                value: 30000,
+                min: 1000,
+                max: 50000,
+                step: 1,
+                slide: function( event, ui ) {
+                    $(".audio-samplerate-input-value").val(ui.value );
+                    $(".audio-samplerate-value").text(ui.value );
+                }
+            });
+
+            $("#slider-audio-channels").slider({
+                range: "min",
+                value: 2,
+                min: 1,
+                max: 12,
+                step: 1,
+                slide: function( event, ui ) {
+                    $(".audio-channels-input-value").val(ui.value );
+                    $(".audio-channels-value").text(ui.value );
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="modal-file-upload" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>Dosya Yükle</h3>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-info">Sadece video dosyaları kabul edilmekte. Dosyaları seçtiğinizde yükleme işlemi başlatılır.</div>
+            <input type="file" name="file-upload" id="file-upload" />
+        </div>
+    </div>
+    <div id="modal-file-transcode" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>Dosyayı Dönüştür</h3>
+        </div>
+        <div class="modal-body">
+            <form method="POST" onsubmit="return transcodeSelectedFile(this);">
+                <input type="hidden" name="id" value="0" />
+                <div class="control-group">
+                    <label class="control-label">Dönüştürülecek Format</label>
+                    <div class="controls">
+                        <select name="format">
+                            <option value="avi">avi</option>
+                            <option value="flv">flv</option>
+                            <option value="mov">mov</option>
+                            <option value="mp4">mp4</option>
+                        </select>
+                    </div>
+                </div>
+                <!--
+                <div class="control-group">
+                    <strong class="control-label">two-pass encoding</strong>
+                    <div class="controls">
+                        <select name="two_pass">
+                            <option value="1">Aktif</option>
+                            <option value="0" selected="selected">Pasif</option>
+                        </select>
+                    </div>
+                </div>-->
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#video" data-toggle="tab">Video</a>
+                    </li>
+                    <li><a href="#audio" data-toggle="tab">Audio</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="video">
+                        <div class="control-group">
+                            <div class="controls">
+                                <label class="checkbox inline" style="font-size:11px;"><input type="checkbox" name="video[codec_active]" value="1" checked="checked" onchange="videoCodecCheckbox(this);" /> Codec Active</label>
+                                <label class="checkbox inline" style="font-size:11px;"><input type="checkbox" name="video[fps_active]" value="1" onchange="videoFpsCheckbox(this);" /> FPS Active</label>
+                                <label class="checkbox inline" style="font-size:11px;"><input type="checkbox" name="video[bitrate_active]" value="1" onchange="videoBitrateCheckbox(this);" /> Bitrate Active</label>
+                            </div>
+                        </div>
+                        <div class="control-group" id="video-codec-box">
+                            <strong class="control-label">Codec</strong>
+                            <div class="controls">
+                                <select name="video[codec]">
+                                    <option selected="selected" value="copy">copy</option>
+                                    <option value="h264">h264</option>
+                                    <option value="divx">divx</option>
+                                    <option value="flv">flv</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group hide" id="video-fps-box" style="padding-right: 50px;">
+                            <strong class="control-label">FPS : <span class="video-fps-value">17</span></strong>
+                            <div class="controls">
+                                <input type="hidden" name="video[fps]" value="17" class="video-fps-input-value" />
+                                <div id="slider-video-fps"></div>
+                            </div>
+                        </div>
+                        <div class="control-group hide" id="video-bitrate-box" style="padding-right: 50px;">
+                            <strong class="control-label">Bitrate : <span class="video-bitrate-value">3000</span></strong>
+                            <div class="controls">
+                                <input type="hidden" name="video[bitrate]" value="3000" class="video-bitrate-input-value" />
+                                <div id="slider-video-bitrate"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="audio">
+                        <div class="control-group">
+                            <div class="controls">
+                                <label class="checkbox inline" style="font-size:11px;"><input type="checkbox" name="audio[codec_active]" value="1" checked="checked" onchange="audioCodecCheckbox(this);" /> Codec Active</label>
+                                <label class="checkbox inline" style="font-size:11px;"><input type="checkbox" name="audio[bitrate_active]" value="1" onchange="audioBitrateCheckbox(this);" /> Bitrate Active</label>
+                                <label class="checkbox inline" style="font-size:11px;"><input type="checkbox" name="audio[samplerate_active]" value="1" onchange="audioSamplerateCheckbox(this);" /> Sample Rate Active</label>
+                                <label class="checkbox inline" style="font-size:11px;"><input type="checkbox" name="audio[channels_active]" value="1" onchange="audioChannelsCheckbox(this);" /> Channels Active</label>
+                            </div>
+                        </div>
+                        <div class="control-group" id="audio-codec-box">
+                            <strong class="control-label">Codec</strong>
+                            <div class="controls">
+                                <select name="audio[codec]">
+                                    <option selected="selected" value="copy">copy</option>
+                                    <option value="vorbis">vorbis</option>
+                                    <option value="aac">aac</option>
+                                    <option value="mp3">mp3</option>
+                                    <option value="mp2">mp2</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group hide" id="audio-bitrate-box" style="padding-right: 50px;">
+                            <strong class="control-label">Bitrate : <span class="audio-bitrate-value">96</span></strong>
+                            <div class="controls">
+                                <input type="hidden" name="audio[bitrate]" value="96" class="audio-bitrate-input-value" />
+                                <div id="slider-audio-bitrate"></div>
+                            </div>
+                        </div>
+                        <div class="control-group hide" id="audio-samplerate-box" style="padding-right: 50px;">
+                            <strong class="control-label">Sample Rate : <span class="audio-samplerate-value">30000</span></strong>
+                            <div class="controls">
+                                <input type="hidden" name="audio[samplerate]" value="30000" class="audio-samplarate-input-value" />
+                                <div id="slider-audio-samplerate"></div>
+                            </div>
+                        </div>
+                        <div class="control-group hide" id="audio-channels-box" style="padding-right: 50px;">
+                            <strong class="control-label">Channels : <span class="audio-channels-value">2</span></strong>
+                            <div class="controls">
+                                <input type="hidden" name="audio[channels]" value="2" class="audio-channels-input-value" />
+                                <div id="slider-audio-channels"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-primary">Dönüştür</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="span6" id="stage-files">
+                <div class="row">
+                    <div class="span4">
+                        <div class="btn-group">
+                            <button data-title="Listeyi Yenile" class="btn" onclick="loadStageFiles()"><i class="icon icon-refresh"></i></button>
+                            <a href="#modal-file-upload" data-title="Dosya Yükle" class="btn" data-toggle="modal"><i class="icon icon-file-alt"></i></a>
+                            <button data-title="Seçili Dosyayı İndir" onclick="downloadStageFile();" class="btn"><i class="icon icon-cloud-download"></i></button>
+                            <button data-title="Seçili Dosyayı Dönüştür" onclick="openTranscodeModal();" class="btn"><i class="icon icon-magic"></i></button>
+                            <button data-title="Seçili Dosyaları Sil" onclick="removeStageFile();" class="btn"><i class="icon icon-remove"></i></button>
+                            <button data-title="Hepsini Seç" class="btn" onclick="selectAllStageFiles()"><i class="icon icon-check"></i></button>
+                            <button data-title="Seçimleri Kaldır" class="btn" onclick="unselectAllStageFiles()"><i class="icon icon-check-empty"></i></button>
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <strong class="pull-right" style="font-size:11px;color:#ccc;margin-top:5px;">Dosyalar</strong>
+                    </div>
+                </div>
+                <div data-repo="#stage-files" class="file-manager">
+                    <ul class="nav">
+                        <li>Yükleniyor...</li>
+                    <ul>
+                </div>
+            </div>
+            <div class="span6" id="production-files">
+                <div class="row">
+                    <div class="span4">
+                        <div class="btn-group">
+                            <button data-title="Listeyi Yenile" class="btn" onclick="loadProductionFiles()"><i class="icon icon-refresh"></i></button>
+                            <button data-title="Seçili Dosyayı İndir" onclick="downloadProductionFile()" class="btn"><i class="icon icon-cloud-download"></i></button>
+                            <button data-title="Seçili Dosyayı Sil" onclick="removeProductionFile();" class="btn"><i class="icon icon-remove"></i></button>
+                            <button data-title="Hepsini Seç" class="btn" onclick="selectAllProductionFiles()"><i class="icon icon-check"></i></button>
+                            <button data-title="Seçimleri Kaldır" class="btn" onclick="unselectAllProductionFiles()"><i class="icon icon-check-empty"></i></button>
+                        </div>
+                    </div>
+                    <div class="span2">
+                        <strong class="pull-right" style="font-size:12px;color:#ccc;margin-top:5px;">Dönüştürülen Dosyalar</strong>
+                    </div>
+                </div>
+                <div data-repo="#production-files" class="file-manager">
+                    <ul class="nav">
+                        <li>Yükleniyor...</li>
+                    <ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

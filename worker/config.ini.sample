@@ -1,0 +1,26 @@
+[Worker]
+name = worker-1
+
+[Gearman]
+host = localhost
+port = 4730
+
+[MySQL]
+host = 127.0.0.1
+port = 8889
+user = root
+password = root
+db = transcoder
+
+[S3]
+bucket = 
+key = 
+secret = 
+tmp_dir = /tmp
+
+[Node]
+bin = /Users/omer/.nvm/v0.10.4/bin/node
+tool_check_mimetype = /Users/omer/Projects/PhpProjects/fatih-transcoder/utils/check_mimetype.js
+
+[Log]
+file = /tmp/transcoder.log

@@ -1,0 +1,7 @@
+.idea
+node_modules
+vendor
+composer.lock
+conf/development.yaml
+worker/config.ini
+test.php

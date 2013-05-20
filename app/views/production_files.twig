@@ -1,0 +1,7 @@
+{% for file in production_files %}
+    <li>
+        <a href="javascript:;" onclick="selectFile(this);" data-id="{{ file.id }}"><i class="icon icon-file"></i> {{file.name}} <span class="pull-right badge badge-info">{{ show_filesize(file.size) }}</span></a>
+    </li>
+{% else %}
+    <li style="padding: 5px;">Henüz dosya yüklenmemiş.</li>
+{% endfor %}

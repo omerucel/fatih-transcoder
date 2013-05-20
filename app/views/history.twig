@@ -1,0 +1,140 @@
+{% extends "layout.twig" %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        var counter = -1;
+
+        function loadJobs()
+        {
+            $.get('{{ base_url }}/jobs', function(response){
+                $('#history tbody').html(response);
+                if (counter === -1)
+                {
+                    counter = 0;
+                    startTimer();
+                }else{
+                    counter = 0;
+                }
+            });
+        }
+
+        function startTimer()
+        {
+            setInterval(function(){
+                if (counter == 0)
+                {
+                    $('#loading-bar .progress').removeClass('progress-striped')
+                            .removeClass('active');
+                }
+
+                if (counter == 1)
+                {
+                    $('#loading-bar .progress').addClass('progress-striped')
+                            .addClass('active');
+                }
+
+                counter+=1;
+
+                if (counter === 2)
+                {
+                    loadJobs();
+                }
+            }, 1000);
+        }
+
+        function showDetail(button)
+        {
+            var modal = picoModal('Lütfen bekleyiniz... Bilgiler yükleniyor..');
+            $.get('{{ base_url }}/job/' + $(button).data('id'), function(response){
+                modal.close();
+                $('#modal-detail').modal();
+                $('#modal-detail .modal-body').html(response);
+            });
+        }
+
+        $(document).ready(function(){
+            {% if is_complete == 0 %}
+                loadJobs();
+            {% endif %}
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="modal-detail" class="modal hide fade">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>Detay</h3>
+        </div>
+        <div class="modal-body">
+            Yükleniyor...
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="span11">
+                <ul class="nav nav-pills">
+                    <li {% if is_complete == 0 %}class="active"{% endif %}><a href="?is_complete=0">Devam Edenler</a></li>
+                    <li {% if is_complete == 1 %}class="active"{% endif %}><a href="?is_complete=1">Tamamlananlar</a></li>
+                </ul>
+            </div>
+            <div class="span1" id="loading-bar">
+                {% if is_complete == 0 %}
+                    <div class="progress" style="margin-top:5px;">
+                        <div class="bar" style="width: 100%;"></div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="span12">
+                <table id="history" class="table table-bordered table-striped table-condensed">
+                    {% if is_complete == 0 %}
+                        <thead>
+                            <tr>
+                                <th class="span4">Dosya Adı</th>
+                                <th class="span2">Sunucu Adı</th>
+                                <th class="span2">Geçen Süre</th>
+                                <th class="span4">Durumu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4">Lütfen bekleyiniz...</td>
+                            </tr>
+                        </tbody>
+                    {% else %}
+                        <thead>
+                            <tr>
+                                <th class="span4">Girdi</th>
+                                <th class="span5">Çıktı</th>
+                                <th class="span2">Tarih</th>
+                                <th class="span1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in jobs %}
+                                <tr {% if job.has_error == 1 %}class="error"{% else %}class="success"{% endif %}>
+                                    <td>{{ job.input_name }}</td>
+                                    {% if job.has_error == 1 %}
+                                        <td>Dönüştürme işlemi başarısız oldu.</td>
+                                    {% else %}
+                                        <td>{{ job.output_name }}</td>
+                                    {% endif %}
+                                    <td>{{ job.completed_at }}</td>
+                                    <td><button data-id="{{ job.id }}" onclick="showDetail(this);" class="btn btn-mini btn-info">Detay</button></td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="4">
+                                        Dönüştürülen bir dosya bulunamadı
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

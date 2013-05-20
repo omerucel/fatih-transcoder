@@ -1,0 +1,4 @@
+MySQL-python==1.2.4
+-e git+https://github.com/senko/python-video-converter.git@81d235ff57e9bb38ee4737f36b5c126cc23dd567#egg=VideoConverter-dev
+boto==2.9.2
+gearman==2.0.2

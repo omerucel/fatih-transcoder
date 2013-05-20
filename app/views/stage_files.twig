@@ -1,0 +1,8 @@
+{% for file in stage_files %}
+    <li>
+        <a href="javascript:;" onclick="selectFile(this);" data-id="{{ file.id }}" data-audio-codec="{{ file.audio_codec }}" data-audio-bitrate="{{ file.audio_bitrate }}" data-audio-samplerate="{{ file.audio_samplerate }}" data-audio-channels="{{ file.audio_channels }}"
+                data-video-codec="{{ file.video_codec }}" data-video-fps="{{ file.video_fps }}" data-video-bitrate="{{ file.video_bitrate }}"><i class="icon icon-file"></i> {{file.name}} <span class="pull-right badge badge-info">{{ show_filesize(file.size) }}</span></a>
+    </li>
+{% else %}
+    <li style="padding: 5px;">Henüz dosya yüklenmemiş.</li>
+{% endfor %}
